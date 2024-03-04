@@ -1,3 +1,5 @@
+ro.surface_flinger.primary_display_orientation=ORIENTATION_270
+
 # Bluetooth
 bluetooth.device.default_name=Galaxy Z Fold3
 
