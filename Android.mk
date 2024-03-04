@@ -6,10 +6,17 @@
 
 LOCAL_PATH := $(call my-dir)
 
-ifeq ($(TARGET_DEVICE),q2q)
+ifneq ($(filter q2q,$(TARGET_DEVICE)),)
 
-subdir_makefiles=$(call first-makefiles-under,$(LOCAL_PATH))
+WIFI_FIRMWARE_SYMLINKS := $(TARGET_OUT_VENDOR)/firmware/
+$(WIFI_FIRMWARE_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
+	@echo "Creating WiFi firmware symlinks: $@"
+	@mkdir -p $@/wlan/qca_cld/qca6490
+	$(hide) ln -sf /data/vendor/firmware/wlanmdsp.mbn $@/wlanmdsp.otaupdate
+	$(hide) ln -sf /mnt/vendor/persist/qca6490/wlan_mac.bin $@/wlan/qca_cld/qca6490/wlan_mac.bin
+	$(hide) ln -sf /vendor/etc/wifi/qca6490/WCNSS_qcom_cfg.ini $@/wlan/qca_cld/qca6490/WCNSS_qcom_cfg.ini
 
-$(foreach mk,$(subdir_makefiles),$(info including $(mk) ...)$(eval include $(mk)))
+ALL_DEFAULT_INSTALLED_MODULES += \
+    $(WIFI_FIRMWARE_SYMLINKS)
 
 endif
